@@ -1,0 +1,44 @@
+import cv2
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+
+*Load the facial recognition model*
+face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+
+*Load the dataset*
+X = []  # facial features
+y = []  # genetic disorder labels
+for file in dataset:
+img = cv2.imread(file)
+faces = face_cascade.detectMultiScale(img, scaleFactor=1.1, minNeighbors=5)
+for (x, y, w, h) in faces:
+face = img[y:y+h, x:x+w]
+face = cv2.resize(face, (128, 128))
+face = face.flatten()
+X.append(face)
+y.append(label)
+
+*Train the machine learning model*
+clf = RandomForestClassifier(n_estimators=100)
+clf.fit(X, y)
+
+*Test the model*
+test_img = cv2.imread('test_image.jpg')
+faces = face_cascade.detectMultiScale(test_img, scaleFactor=1.1, minNeighbors=5)
+for (x, y, w, h) in faces:
+face = test_img[y:y+h, x:x+w]
+face = cv2.resize(face, (128, 128))
+face = face.flatten()
+prediction = clf.predict(face)
+
+*Identify the genetic disorder*
+if prediction == 0:
+print("No genetic disorder detected")
+elif prediction == 1:
+print("Genetic disorder detected: Down Syndrome")
+elif prediction == 2:
+print("Genetic disorder detected: Turner Syndrome")
+elif prediction == 3:
+print("Genetic disorder detected: Fragile X Syndrome")
+else:
+print("Unknown genetic disorder")
